@@ -17,7 +17,6 @@
 package com.example.sleeptracker.sleeptracker
 
 import android.app.Application
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -68,9 +67,20 @@ class SleepTrackerViewModel(
     val navigateToSleepQuality : LiveData<SleepNight>
         get() = _navigateToSleepQuality
 
+    private val _navigateToSleepDataQuality = MutableLiveData<Long>()
+    val navigateToSleepDataQuality
+        get() = _navigateToSleepDataQuality
+
     init {
         initializeTonight()
 
+    }
+
+    fun onSleepNightClicked(id: Long){
+        _navigateToSleepDataQuality.value = id
+    }
+    fun onSleepDataQualityNavigated(){
+        _navigateToSleepDataQuality.value = null
     }
 
     fun doneShowingSnackBar(){
