@@ -70,6 +70,13 @@ class SleepTrackerFragment : Fragment() {
 
 //        GridLayout
         val manager = GridLayoutManager(activity, 3)
+        manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = when (position) {
+                0 -> 3
+                else -> 1
+            }
+
+        }
         binding.sleepList.layoutManager = manager
 
         val adapter = SleepNightAdapter(SleepNightListener { nightId ->
@@ -77,17 +84,21 @@ class SleepTrackerFragment : Fragment() {
         })
         binding.sleepList.adapter = adapter
 
-        sleepTrackerViewModel.navigateToSleepDataQuality.observe(viewLifecycleOwner, Observer {night ->
-            night?.let {
-                findNavController().navigate(SleepTrackerFragmentDirections
-                    .actionSleepTrackerFragmentToSleepDetailFragment(night))
-                sleepTrackerViewModel.onSleepDataQualityNavigated()
-            }
-        })
+        sleepTrackerViewModel.navigateToSleepDataQuality.observe(
+            viewLifecycleOwner,
+            Observer { night ->
+                night?.let {
+                    findNavController().navigate(
+                        SleepTrackerFragmentDirections
+                            .actionSleepTrackerFragmentToSleepDetailFragment(night)
+                    )
+                    sleepTrackerViewModel.onSleepDataQualityNavigated()
+                }
+            })
 
         sleepTrackerViewModel.nights.observe(
             viewLifecycleOwner,
-            Observer { it?.let { adapter.submitList(it) } })
+            Observer { it?.let { adapter.addHeaderAndSubmitList(it) } })
 
         sleepTrackerViewModel.navigateToSleepQuality.observe(viewLifecycleOwner, Observer { night ->
             night?.let {
